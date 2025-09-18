@@ -38,7 +38,7 @@ export default function Home() {
     <div 
       className="min-h-screen flex flex-col justify-center items-center relative overflow-hidden"
       style={{
-        backgroundImage: 'url(/sunset.jpeg)',
+        backgroundImage: 'url(/sunset.png)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat'
