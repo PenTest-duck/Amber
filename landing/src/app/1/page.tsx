@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { ChevronRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-export default function Page3() {
+export default function Home() {
   const [showFirstText, setShowFirstText] = useState(false);
   const [showSecondText, setShowSecondText] = useState(false);
   const [showArrow, setShowArrow] = useState(false);
@@ -14,15 +14,15 @@ export default function Page3() {
     // First text appears immediately
     setShowFirstText(true);
     
-    // Second text appears after 1.5 seconds
+    // Second text appears after 1 second
     const timer1 = setTimeout(() => {
       setShowSecondText(true);
-    }, 1500);
+    }, 1000);
     
-    // Arrow appears after 3 seconds
+    // Arrow appears after 2 seconds
     const timer2 = setTimeout(() => {
       setShowArrow(true);
-    }, 3000);
+    }, 2000);
 
     return () => {
       clearTimeout(timer1);
@@ -31,8 +31,7 @@ export default function Page3() {
   }, []);
 
   const handleNext = () => {
-    // Redirect to Google Forms
-    window.location.href = "https://forms.gle/uctzwusKnfg2ZJiH8";
+    router.push("/2");
   };
 
   return (
@@ -47,32 +46,32 @@ export default function Page3() {
     >
       {/* First text - positioned randomly but readable */}
       <div 
-        className={`text-4xl md:text-6xl font-black text-black transition-opacity duration-1000 ${
+        className={`text-6xl md:text-8xl font-black text-black transition-opacity duration-1000 ${
           showFirstText ? 'opacity-100' : 'opacity-0'
         }`}
         style={{
           position: 'absolute',
-          top: '25%',
-          left: '8%',
-          transform: 'rotate(-1deg)'
+          top: '20%',
+          left: '10%',
+          transform: 'rotate(-2deg)'
         }}
       >
-        never let an opportunity slip again
+        hi i&apos;m chris
       </div>
 
       {/* Second text - positioned randomly but readable */}
       <div 
-        className={`text-6xl md:text-8xl font-black text-black transition-opacity duration-1000 ${
+        className={`text-5xl md:text-7xl font-black text-black transition-opacity duration-1000 ${
           showSecondText ? 'opacity-100' : 'opacity-0'
         }`}
         style={{
           position: 'absolute',
           top: '60%',
           right: '15%',
-          transform: 'rotate(2deg)'
+          transform: 'rotate(1deg)'
         }}
       >
-        meet amber
+        i have big fomo
       </div>
 
       {/* Arrow button */}

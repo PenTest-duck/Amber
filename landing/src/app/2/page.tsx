@@ -38,7 +38,7 @@ export default function Page2() {
   }, []);
 
   const handleNext = () => {
-    router.push("/page3");
+    router.push("/3");
   };
 
   return (
@@ -90,10 +90,10 @@ export default function Page2() {
           position: 'absolute',
           top: '65%',
           right: '10%',
-          transform: 'rotate(-2deg)'
+          transform: 'rotate(5deg)'
         }}
       >
-        i wish i'd known about that
+        &quot;i wish i&apos;d known about that&quot;
       </div>
 
       {/* Arrow button */}
