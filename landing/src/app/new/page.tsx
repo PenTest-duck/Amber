@@ -4,15 +4,15 @@ export default function NewPage() {
       <div className="max-w-2xl w-full space-y-8">
         {/* Tagline */}
         <h1 className="text-2xl font-bold text-black text-left">
-          i signed up to every Harvard mailing list so you don't have to
+          i signed up to every Harvard mailing list so you don&apos;t have to
         </h1>
         
         {/* Manifesto Letter */}
         <div className="space-y-6 text-left">
-          <p className="text-lg text-black">that's right - every club, newsletter, calendar etc</p>
-          <p className="text-lg text-black">hi i'm chris</p>
+          <p className="text-lg text-black">that&apos;s right - every club, newsletter, calendar etc</p>
+          <p className="text-lg text-black">hi i&apos;m chris</p>
           <p className="text-lg text-black">i have big fomo</p>
-          <p className="text-lg text-black">do you? when was the last time you said: "i wish i'd known about that"</p>
+          <p className="text-lg text-black">do you? when was the last time you said: &quot;i wish i&apos;d known about that&quot;</p>
           <p className="text-lg text-black">never let another opportunity slip past you again</p>
           <p className="text-lg text-black">meet amber, your personal opportunity scout</p>
         </div>
