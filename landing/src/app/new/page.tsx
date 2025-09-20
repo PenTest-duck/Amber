@@ -83,7 +83,7 @@ export default function NewPage() {
           {/* How It Works Link */}
           <div className="flex justify-center">
             <Link 
-              href="/how" 
+              href="/how-it-works" 
               className="text-white hover:text-white/80 underline transition-colors drop-shadow-lg"
             >
               how it works

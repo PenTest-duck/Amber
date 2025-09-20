@@ -1,5 +1,5 @@
 import json
-from typing import Any
+from typing import Any, Dict
 from pydantic import BaseModel
 import requests
 import os
@@ -18,6 +18,7 @@ RAI_API_KEY = os.getenv("RAI_API_KEY")
 RAI_REGION = os.getenv("RAI_REGION")
 RAI_PROJECT = os.getenv("RAI_PROJECT")
 RAI_LINKEDIN_TOOL_ID = "2563f44e-fbd6-40f2-8761-dfefe874abba"
+resend.api_key = os.getenv("RESEND_API_KEY")
 langfuse = get_client()
 LlamaIndexInstrumentor().instrument()
 
@@ -25,6 +26,21 @@ LlamaIndexInstrumentor().instrument()
 class OnboardingAgentRequest(BaseModel):
     email: str
     school: str
+
+# class LinkedInProfile(BaseModel):
+#     first_name: str
+#     last_name: str
+#     headline: str
+#     job_title: str
+#     about: str
+#     location: str
+#     school: str
+#     company: str
+#     company_description: str
+#     company_industry: str
+#     current_company_join_month: str
+#     current_company_join_year: str
+#     current_job_duration: str
 
 class Email(BaseModel):
     subject: str
@@ -38,8 +54,8 @@ class ScrapeLinkedInEvent(Event):
     url: str
 
 
-class ComposeEmailEvent(Event):
-    profile: str
+class WriteEmailEvent(Event):
+    profile: Dict[str, Any]
 
 
 class SendEmailEvent(Event):
@@ -82,7 +98,7 @@ class OnboardingAgent(Workflow):
     @observe
     async def scrape_linkedin_profile(
         self, ev: ScrapeLinkedInEvent
-    ) -> ComposeEmailEvent | FailureEvent:
+    ) -> WriteEmailEvent | FailureEvent:
         url = f"https://api-{RAI_REGION}.stack.tryrelevance.com/latest/studios/{RAI_LINKEDIN_TOOL_ID}/trigger_limited"
         headers = {
             "Authorization": f"{RAI_PROJECT}:{RAI_API_KEY}"
@@ -99,17 +115,52 @@ class OnboardingAgent(Workflow):
         result = response.json()
         if len(result.get("errors", [])) > 0:
             return FailureEvent(error=f"Failed to scrape LinkedIn profile: {result.get("errors")}")
-        return ComposeEmailEvent(profile=json.dumps(result["output"]["linkedin_profile"]))
+        return WriteEmailEvent(profile=result["output"]["linkedin_profile"])
 
     @step
     @observe(as_type="generation")
-    async def write_email(self, ev: ComposeEmailEvent) -> SendEmailEvent | FailureEvent:
+    async def write_email(self, ev: WriteEmailEvent) -> SendEmailEvent | FailureEvent:
         email: Email = self.llm.structured_predict(
             output_cls=Email,
             prompt=ChatPromptTemplate([
-                ChatMessage(role="system", content="You are a helpful assistant that writes emails."),
-                ChatMessage(role="user", content="Here information about the LinkedIn profile: {profile}"),
+                ChatMessage(role="system", content="""
+You are Amber, a personal opportunity scout.
+Your task is to write a first email to {first_name}, a student at {school}.
+You have already scraped their LinkedIn profile, which will be provided to you.
+
+Make explicit references to the LinkedIn profile so that the recipient feels like you know them personally.
+Use an informal tone. Be nonchalant and assertive but not overly pushy nor disrespectful.
+Always use lowercase for everything. Never use uppercase.
+Never use the em dash, use a normal dash instead.
+Write the subject and the full email, so that can be sent immediately afterwards. Do not leave any placeholders.
+
+Your subject must be a single line (all lowercase) following this format: `[amber] <subject>`
+The subject should be a catchy single line or question that shows you know a specific core fact of the recipient, e.g. `[amber] suffering in stats courses?`, `[amber] that research on the world bank going good?`
+
+Your email body must follow the below format:
+```
+hey {first_name},
+
+i guess i better introduce myself. i'm amber, your ai opportunity scout.
+i'm subscribed to the mailing lists & calendars for all 548 clubs and 386 institutes at harvard + events all across boston.
+
+<3 brief lines talking about what the recipient seems to be interested in>
+
+look forward bringing you the best opportunities based on your interests.
+
+live without fomo - be omniscient,
+amber
+
+p.s. you can reply or send me emails anytime for any reason, i don't bite.
+```
+"""),
+                ChatMessage(role="user", content="""
+Here is information about the recipient's LinkedIn profile:
+{profile}
+"""),
             ]),
+            first_name=ev.profile["first_name"],
+            school=self.request.school,
             profile=ev.profile,
         )
         return SendEmailEvent(subject=email.subject, body=email.body)
@@ -124,7 +175,7 @@ class OnboardingAgent(Workflow):
             "html": ev.body,
         }
         email = resend.Emails.send(params)
-        langfuse.update_current_span(metadata={"email_id": email.id})
+        langfuse.update_current_span(metadata={"email_id": email["id"]})
         return StopEvent()
 
     @step

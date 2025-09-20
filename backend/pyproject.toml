@@ -11,6 +11,7 @@ dependencies = [
     "llama-index>=0.14.2",
     "openinference-instrumentation-llama-index>=4.3.5",
     "resend>=2.14.0",
+    "supabase>=2.19.0",
 ]
 
 [dependency-groups]
