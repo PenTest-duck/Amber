@@ -5,12 +5,6 @@ export default function HowPage() {
   return (
     <div 
       className="min-h-screen flex flex-col items-center justify-center p-8 relative"
-      style={{
-        backgroundImage: 'url(/sunset.png)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat'
-      }}
     >
       <div className="max-w-4xl w-full space-y-8">
         {/* Page Title */}
