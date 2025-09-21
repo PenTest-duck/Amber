@@ -1,8 +1,9 @@
 from datetime import datetime
 import json
 from typing import Any, Dict
+import asyncio
 from pydantic import BaseModel
-import requests
+import httpx
 import os
 import resend
 from db import supabase
@@ -71,11 +72,12 @@ class OnboardingAgent(Workflow):
 
         # Search Serper for linkedin profile
         search_query = f"{username} {self.request.school} linkedin"
-        response = requests.post(
-            url="https://google.serper.dev/search",
-            headers={"X-API-KEY": SERPER_API_KEY},
-            json={"q": search_query},
-        )
+        async with httpx.AsyncClient() as client:
+            response = await client.post(
+                url="https://google.serper.dev/search",
+                headers={"X-API-KEY": SERPER_API_KEY},
+                json={"q": search_query},
+            )
         if response.status_code != 200:
             return FailureEvent(error="Failed to search Serper")
         for result in response.json().get("organic", []):
@@ -101,7 +103,8 @@ class OnboardingAgent(Workflow):
             },
             "project": RAI_PROJECT,
         }
-        response = requests.post(url=url, headers=headers, json=body)
+        async with httpx.AsyncClient() as client:
+            response = await client.post(url=url, headers=headers, json=body)
         if response.status_code != 200:
             return FailureEvent(error=f"Failed to scrape LinkedIn profile: status code {response.status_code}")
         result = response.json()
@@ -113,7 +116,7 @@ class OnboardingAgent(Workflow):
     @observe(as_type="generation")
     async def write_email(self, ev: WriteEmailEvent) -> SendEmailEvent | FailureEvent:
         first_name = ev.profile["first_name"]
-        email: Email = self.llm.structured_predict(
+        email: Email = await self.llm.astructured_predict(
             output_cls=Email,
             prompt=ChatPromptTemplate([
                 ChatMessage(role="system", content="""
@@ -227,7 +230,7 @@ amber
 @observe(as_type="agent")
 async def run_onboarding_agent(request: OnboardingAgentRequest):
     agent = OnboardingAgent(request=request, timeout=60, verbose=True)
-    result = await agent.run(email="chrisyoo@college.harvard.edu")
+    result = await agent.run(email=request.email)
     print(result)
 
 

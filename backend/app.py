@@ -39,3 +39,24 @@ async def signup(request: SignupRequest, background_tasks: BackgroundTasks) -> S
         raise HTTPException(status_code=500, detail="failed to sign up")
 
     return SignupResponse()
+
+from llama_index.core.workflow import Workflow, step, StartEvent, StopEvent
+from typing import Any
+import asyncio
+
+class TestWorkflow(Workflow):
+    def __init__(self, **kwargs: Any):
+        super().__init__(**kwargs)
+
+    @step
+    async def test_step(self, ev: StartEvent) -> StopEvent:
+        await asyncio.sleep(10)
+        print("test step done")
+        return StopEvent()
+
+@app.get("/test")
+async def test(background_tasks: BackgroundTasks) -> str:
+    async def test_task():
+        await TestWorkflow().run()
+    background_tasks.add_task(test_task)
+    return "ok"
