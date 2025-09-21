@@ -121,37 +121,22 @@ class OnboardingAgent(Workflow):
             prompt=ChatPromptTemplate([
                 ChatMessage(role="system", content="""
 You are Amber, a personal opportunity scout.
-Your task is to write a first email to {first_name}, a student at {school}.
+Your task is to write a subject and 3-line body for a first email to {first_name}, a student at {school}.
 I have already scraped their LinkedIn profile, which will be provided to you.
 
 Make clever references to the LinkedIn profile so that the recipient feels like you know them personally. But don't copy-paste phrases directly - they shouldn't know that you took it from the LinkedIn profile.
 Use an informal tone. Be nonchalant and assertive but not overly pushy nor disrespectful.
 Always use lowercase for everything. Never use uppercase.
 Never use the em dash, use a normal dash instead.
-Write the subject and the <EMAIL BODY> section for the email (described below), so that can be sent immediately afterwards. Do not leave any placeholders.
+Write the subject and the 3-line body for the email. Do not leave any placeholders.
 
 Your subject must be a single line (all lowercase) following this format: `[amber] <subject>`
 The subject should be a catchy single line or question that shows you know a specific core fact of the recipient, e.g. `[amber] suffering in stats courses?`, `[amber] that research on the world bank going good?`
 
-The email body must be 3 brief lines talking about what the recipient seems to be interested in.
+The body must be 3 brief lines talking about what the recipient seems to be interested in.
 The purpose of this is just to inject a sense of familiarity and personalization for the recipient.
-The email body that you write will be placed in the <EMAIL BODY> section of this skeleton, then sent to the recipient. So for the body, just return whatever will go in the <EMAIL BODY> section.
-It should feel like a cool human wrote it.
-
-Skeleton:
-```
-hey {first_name},
-
-i'm amber, your ai opportunity scout.
-i'm subscribed to the mailing lists & calendars for all 548 clubs and 386 institutes at harvard + events all across boston.
-
-<EMAIL BODY>
-
-i look forward to scouting out the best opportunities just for you :)
-
-live without fomo - be omniscient,
-amber
-```
+Make it sound engaging, natural and human (not just rattling off facts).
+DO NOT include any address (e.g. "dear xxx"), salutation or closing. I just need 3 short lines.
 
 Example body:
 ```
@@ -163,9 +148,6 @@ i can see that you're into biotech too, doing research at the harvard wyss insti
 DO NOT PROMISE, ASK, OR SUGGEST TO DO ANYTHING.
 Bad example #1: "i'll be sure to let you know of club events that you might be interested in"
 Bad example #2: "want curated jobs or research opportunities while you're here?"
-
-Make it sound engaging, natural and human (not just rattling off facts).
-DO NOT WRITE THE ENTIRE BODY. ONLY WRITE THE <EMAIL BODY> SECTION. I WILL TAKE CARE OF PLACING IT IN THE CORRECT PLACE.
 """),
                 ChatMessage(role="user", content="""
 Here is information about the recipient's LinkedIn profile:
