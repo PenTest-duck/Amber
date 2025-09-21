@@ -20,7 +20,7 @@ export default function New2Page() {
     const isValidHarvardEmail = email.endsWith('.harvard.edu') || email.endsWith('@harvard.edu');
     
     if (!isValidHarvardEmail) {
-      toast.error('only harvard students allowed');
+      toast.error('only harvard students allowed - use your harvard email');
       return;
     }
     

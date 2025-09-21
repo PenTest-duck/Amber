@@ -72,7 +72,7 @@ class OnboardingAgent(Workflow):
 
         # Search Serper for linkedin profile
         search_query = f"{username} {self.request.school} linkedin"
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(timeout=15) as client:
             response = await client.post(
                 url="https://google.serper.dev/search",
                 headers={"X-API-KEY": SERPER_API_KEY},
@@ -103,7 +103,7 @@ class OnboardingAgent(Workflow):
             },
             "project": RAI_PROJECT,
         }
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(timeout=30) as client:
             response = await client.post(url=url, headers=headers, json=body)
         if response.status_code != 200:
             return FailureEvent(error=f"Failed to scrape LinkedIn profile: status code {response.status_code}")
@@ -186,8 +186,10 @@ amber
             "subject": "[amber] your first step to omniscience", # hard-coded subject for now [DO NOT CHANGE THIS LINE]
             "html": body
         }
-        email = resend.Emails.send(params)
-        langfuse.update_current_span(metadata={"email_id": email["id"]})
+        # NOT SENDING EMAIL FOR NOW
+        langfuse.update_current_span(metadata={"email_body": body})
+        # email = resend.Emails.send(params)
+        # langfuse.update_current_span(metadata={"email_id": email["id"]})
         return SuccessEvent()
 
     @step
