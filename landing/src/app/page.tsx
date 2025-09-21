@@ -1,28 +1,35 @@
 'use client';
 
+import { signup } from '@/api/endpoints';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
 export default function New2Page() {
   const [email, setEmail] = useState('');
+  const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Check if email ends with .harvard.edu or @harvard.edu
     const isValidHarvardEmail = email.endsWith('.harvard.edu') || email.endsWith('@harvard.edu');
     
     if (!isValidHarvardEmail) {
-      toast.error('only harvard students allowed - use your harvard email address');
+      toast.error('only harvard students allowed');
       return;
     }
     
-    // If valid, show success message
-    toast.success('Email submitted successfully!');
-    setEmail(''); // Clear the form
+    try {
+      await signup(email, "harvard");
+      router.push('/thanks');
+    } catch (error) {
+      toast.error('failed to sign up :(');
+    }
   };
   return (
     <div 
@@ -31,7 +38,7 @@ export default function New2Page() {
       <div className="max-w-2xl w-full space-y-8">
         {/* Tagline */}
         <h1 className="text-2xl font-bold text-black text-left">
-          i signed up to every Harvard mailing list so you don&apos;t have to
+          i signed up to every HARVARD mailing list so you don&apos;t have to
         </h1>
         
         {/* Manifesto Letter */}
@@ -46,17 +53,17 @@ export default function New2Page() {
         
         {/* Email Signup Form */}
         <form onSubmit={handleSubmit} className="flex items-center justify-center space-x-2">
-          <input
+          <Input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="harvard email address"
-            className="flex-1 max-w-md px-4 py-3 border-2 border-white/30 rounded-lg text-white placeholder-white/70 bg-black/10 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-white/50"
+            placeholder="harvard email"
+            className="flex-1 max-w-md px-4 py-3 border-2 border-white/30 rounded-lg text-white placeholder:text-white bg-black/10 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-white/50 h-auto selection:bg-white/30 selection:text-white"
             required
           />
           <Button
             type="submit"
-            className="bg-white/20 text-white p-3 rounded-lg hover:bg-white/30 transition-colors backdrop-blur-sm border border-white/30"
+            className="bg-white/20 text-white px-3 py-3 rounded-lg hover:bg-white/30 transition-colors backdrop-blur-sm border border-white/30 h-auto"
           >
             <ChevronRight />
           </Button>

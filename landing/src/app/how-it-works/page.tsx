@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { ChevronLeft } from 'lucide-react';
 
 export default function HowPage() {
   return (
@@ -9,7 +10,7 @@ export default function HowPage() {
       <div className="max-w-4xl w-full space-y-8">
         {/* Page Title */}
         <h1 className="text-4xl font-bold text-black text-center">
-          How It Works
+          how it works
         </h1>
         
         {/* Example Image */}
@@ -26,10 +27,10 @@ export default function HowPage() {
         {/* Back Link */}
         <div className="flex justify-center">
           <Link 
-            href="/new" 
-            className="text-black hover:text-gray-600 underline transition-colors"
+            href="/" 
+            className="flex flex-row items-center text-white hover:text-gray-300 underline transition-colors"
           >
-            ← Back to signup
+            <ChevronLeft /> back
           </Link>
         </div>
       </div>
