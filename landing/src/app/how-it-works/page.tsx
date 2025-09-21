@@ -13,6 +13,12 @@ export default function HowPage() {
           how it works
         </h1>
         
+        {/* Description */}
+        <div className="text-lg text-center space-y-2">
+          <p>3 events, 1 email, once a week</p>
+          <p>only events that matter to you - no spam, no bs</p>
+        </div>
+        
         {/* Example Image */}
         <div className="flex justify-center">
           <Image 

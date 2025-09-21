@@ -3,7 +3,7 @@
 import { signup } from '@/api/endpoints';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, Loader2 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -11,6 +11,7 @@ import { toast } from 'sonner';
 
 export default function New2Page() {
   const [email, setEmail] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -24,11 +25,14 @@ export default function New2Page() {
       return;
     }
     
+    setIsLoading(true);
     try {
       await signup(email, "harvard");
       router.push('/thanks');
     } catch (error) {
       toast.error('failed to sign up :(');
+    } finally {
+      setIsLoading(false);
     }
   };
   return (
@@ -63,9 +67,14 @@ export default function New2Page() {
           />
           <Button
             type="submit"
-            className="bg-white/20 text-white px-3 py-3 rounded-lg hover:bg-white/30 transition-colors backdrop-blur-sm border border-white/30 h-auto"
+            disabled={isLoading}
+            className="bg-white/20 text-white px-3 py-3 rounded-lg hover:bg-white/30 transition-colors backdrop-blur-sm border border-white/30 h-auto disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <ChevronRight />
+            {isLoading ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <ChevronRight />
+            )}
           </Button>
         </form>
         
