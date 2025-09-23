@@ -20,7 +20,7 @@ async def ping() -> str:
 
 class SignupRequest(BaseModel):
     email: str
-    school: str
+    school_id: str
 
 class SignupResponse(BaseModel):
     pass
@@ -32,8 +32,9 @@ async def signup(request: SignupRequest, background_tasks: BackgroundTasks) -> S
         raise HTTPException(status_code=400, detail="email already exists")
 
     try:
-        supabase.table("signups").insert({"email": request.email}).execute()
-        background_tasks.add_task(run_onboarding_agent, OnboardingAgentRequest(email=request.email, school=request.school))
+        school = supabase.table("schools").select("name").eq("id", request.school_id).single().execute()
+        supabase.table("signups").insert({"email": request.email, "school_id": request.school_id}).execute()
+        background_tasks.add_task(run_onboarding_agent, OnboardingAgentRequest(email=request.email, school=school.data["name"]))
     except Exception as e:
         print("failed to sign up", e)
         raise HTTPException(status_code=500, detail="failed to sign up")

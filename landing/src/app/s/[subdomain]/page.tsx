@@ -1,67 +1,86 @@
-'use client';
+"use client";
 
-import { signup } from '@/api/endpoints';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { ChevronRight, Loader2 } from 'lucide-react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { toast } from 'sonner';
+import { signup } from "@/api/endpoints";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { ROOT_URL } from "@/lib/constants";
+import { ChevronRight, Loader2 } from "lucide-react";
+import Link from "next/link";
+import { redirect, useParams, useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
+import { SUBDOMAINS_MAP } from "@/lib/constants";
 
 export default function LandingPage() {
-  const [email, setEmail] = useState('');
+  const params = useParams<{ subdomain: string }>();
+  if (!(params.subdomain in SUBDOMAINS_MAP)) {
+    redirect(ROOT_URL);
+  }
+
+  const { school_id, school_name, email_suffix } = SUBDOMAINS_MAP[params.subdomain];
+  const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Check if email ends with .harvard.edu or @harvard.edu
-    const isValidHarvardEmail = email.endsWith('.harvard.edu') || email.endsWith('@harvard.edu');
-    
+
+    const isValidHarvardEmail =
+      email.endsWith(`.${email_suffix}`) || email.endsWith(`@${email_suffix}`);
+
     if (!isValidHarvardEmail) {
-      toast.error('only harvard students allowed - use your harvard email');
+      toast.error(
+        `only ${school_name} students allowed - use your ${school_name} email`
+      );
       return;
     }
-    
+
     setIsLoading(true);
     try {
-      await signup(email, "harvard");
-      router.push('/thanks');
+      await signup(email, school_id);
+      router.push("/thanks");
     } catch (error) {
-      toast.error('failed to sign up :(');
+      toast.error("failed to sign up :(");
     } finally {
       setIsLoading(false);
     }
   };
   return (
-    <div 
-      className="min-h-screen flex flex-col items-center justify-center p-8 relative"
-    >
+    <div className="min-h-screen flex flex-col items-center justify-center p-8 relative">
       <div className="max-w-2xl w-full space-y-8">
         {/* Tagline */}
         <h1 className="text-2xl font-bold text-black text-left">
-          i signed up to every HARVARD mailing list so you don&apos;t have to
+          i signed up to every {school_name.toUpperCase()} mailing list so you
+          don&apos;t have to
         </h1>
-        
+
         {/* Manifesto Letter */}
         <div className="space-y-6 text-left">
           {/* <p className="text-lg text-black">that&apos;s right - every club, newsletter, calendar etc</p> */}
           <p className="text-lg text-black">hi i&apos;m chris</p>
           <p className="text-lg text-black">i have big fomo</p>
-          <p className="text-lg text-black">do you? when was the last time you said: &quot;i wish i&apos;d known about that&quot;</p>
-          <p className="text-lg text-black">never let another opportunity slip past you again</p>
-          <p className="text-lg text-white font-bold">meet amber, your personal opportunity scout</p>
+          <p className="text-lg text-black">
+            do you? when was the last time you said: &quot;i wish i&apos;d known
+            about that&quot;
+          </p>
+          <p className="text-lg text-black">
+            never let another opportunity slip past you again
+          </p>
+          <p className="text-lg text-white font-bold">
+            meet amber, your personal opportunity scout
+          </p>
         </div>
-        
+
         {/* Email Signup Form */}
-        <form onSubmit={handleSubmit} className="flex items-center justify-center space-x-2">
+        <form
+          onSubmit={handleSubmit}
+          className="flex items-center justify-center space-x-2"
+        >
           <Input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="harvard email"
+            placeholder={`${school_name} email`}
             className="flex-1 max-w-md px-4 py-3 border-2 border-white/30 rounded-lg text-white placeholder:text-white bg-black/10 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-white/50 h-auto selection:bg-white/30 selection:text-white"
             required
           />
@@ -77,11 +96,11 @@ export default function LandingPage() {
             )}
           </Button>
         </form>
-        
+
         {/* How It Works Link */}
         <div className="flex justify-center">
-          <Link 
-            href="/how-it-works" 
+          <Link
+            href="/how-it-works"
             className="text-white hover:text-white/80 underline transition-colors"
           >
             how it works
