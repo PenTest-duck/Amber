@@ -17,7 +17,7 @@ export default function LandingPage() {
     redirect(ROOT_URL);
   }
 
-  const { school_id, school_name, email_suffix } = SUBDOMAINS_MAP[params.subdomain];
+  const { schoolId, schoolName, emailSuffix } = SUBDOMAINS_MAP[params.subdomain];
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -26,19 +26,19 @@ export default function LandingPage() {
     e.preventDefault();
 
     const isValidHarvardEmail =
-      email.endsWith(`.${email_suffix}`) || email.endsWith(`@${email_suffix}`);
+      email.endsWith(`.${emailSuffix}`) || email.endsWith(`@${emailSuffix}`);
 
     if (!isValidHarvardEmail) {
       toast.error(
-        `only ${school_name} students allowed - use your ${school_name} email`
+        `only ${schoolName} students allowed - use your ${schoolName} email`
       );
       return;
     }
 
     setIsLoading(true);
     try {
-      await signup(email, school_id);
-      router.push("/thanks");
+      const { id } = await signup(email, schoolId);
+      router.push(`/onboard?userId=${encodeURIComponent(id)}`);
     } catch (error) {
       toast.error("failed to sign up :(");
     } finally {
@@ -50,7 +50,7 @@ export default function LandingPage() {
       <div className="max-w-2xl w-full space-y-8">
         {/* Tagline */}
         <h1 className="text-2xl font-bold text-black text-left">
-          i signed up to every {school_name.toUpperCase()} mailing list so you
+          i signed up to every {schoolName.toUpperCase()} mailing list so you
           don&apos;t have to
         </h1>
 
@@ -80,7 +80,7 @@ export default function LandingPage() {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder={`${school_name} email`}
+            placeholder={`${schoolName} email`}
             className="flex-1 max-w-md px-4 py-3 border-2 border-white/30 rounded-lg text-white placeholder:text-white bg-black/10 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-white/50 focus:border-white/50 h-auto selection:bg-white/30 selection:text-white"
             required
           />
