@@ -3,19 +3,15 @@
 import { signup } from "@/api/endpoints";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ROOT_URL } from "@/lib/constants";
+import { SUBDOMAINS_MAP } from "@/lib/constants";
 import { ChevronRight, Loader2 } from "lucide-react";
 import Link from "next/link";
-import { redirect, useParams, useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
-import { SUBDOMAINS_MAP } from "@/lib/constants";
 
 export default function LandingPage() {
   const params = useParams<{ subdomain: string }>();
-  if (!(params.subdomain in SUBDOMAINS_MAP)) {
-    redirect(ROOT_URL);
-  }
 
   const { schoolId, schoolName, emailSuffix } = SUBDOMAINS_MAP[params.subdomain];
   const [email, setEmail] = useState("");

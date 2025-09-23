@@ -45,14 +45,19 @@ export async function middleware(request: NextRequest) {
   const subdomain = extractSubdomain(request);
 
   if (subdomain) {
-    // For the root path on a subdomain, rewrite to the subdomain page
-    if (pathname === '/') {
-      return NextResponse.rewrite(new URL(`/s/${subdomain}`, request.url));
-    }
+    // Rewrite any path on a subdomain to the corresponding /s/[subdomain] route, preserving the rest of the path
+    // Examples:
+    //  - sub.example.com/ -> /s/example
+    //  - sub.example.com/how-it-works -> /s/example/how-it-works
+    const rewrittenPath = pathname === '/'
+      ? `/s/${subdomain}`
+      : `/s/${subdomain}${pathname}`;
+    return NextResponse.rewrite(new URL(rewrittenPath, request.url));
   }
 
-  // On the root domain, allow normal access
-  return NextResponse.next();
+  // On the root domain, rewrite to /s/harvard
+  const rewrittenPath = pathname === '/' ? '/s/harvard' : `/s/harvard${pathname}`;
+  return NextResponse.rewrite(new URL(rewrittenPath, request.url));
 }
 
 export const config = {
