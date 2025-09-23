@@ -29,7 +29,7 @@ export default function LandingPage() {
     try {
       await signup(email, "harvard");
       router.push('/thanks');
-    } catch (error) {
+    } catch {
       toast.error('failed to sign up :(');
     } finally {
       setIsLoading(false);

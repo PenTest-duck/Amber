@@ -39,7 +39,7 @@ export default function LandingPage() {
     try {
       const { id } = await signup(email, schoolId);
       router.push(`/onboard?userId=${encodeURIComponent(id)}`);
-    } catch (error) {
+    } catch {
       toast.error("failed to sign up :(");
     } finally {
       setIsLoading(false);

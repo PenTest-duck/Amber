@@ -5,16 +5,19 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ChevronRight, Loader2 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 export default function OnboardPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const userId = searchParams.get("userId") || "";
-  if (!userId) {
-    return router.push("/");
-  }
+
+  useEffect(() => {
+    if (!userId) {
+      router.push("/");
+    }
+  }, [userId, router]);
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -49,12 +52,16 @@ export default function OnboardPage() {
         interests: formData.interests,
       });
       router.push("/thanks");
-    } catch (error) {
+    } catch {
       toast.error("Failed to submit form :(");
     } finally {
       setIsLoading(false);
     }
   };
+
+  if (!userId) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-8 relative">
