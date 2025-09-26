@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Toaster } from "@/components/ui/sonner";
-import { getOptimizedBackgroundImage } from "@/lib/background-image";
+import BackgroundMedia from "@/components/BackgroundMedia";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -26,20 +26,16 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const backgroundImage = getOptimizedBackgroundImage('/omniscient-compressed.png', 1920, 1080);
   
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         style={{
-          backgroundImage,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
           minHeight: '100vh'
         }}
       >
+        <BackgroundMedia />
         {children}
         <Analytics />
         <SpeedInsights />

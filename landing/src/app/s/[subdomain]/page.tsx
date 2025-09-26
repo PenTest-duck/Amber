@@ -43,28 +43,40 @@ export default function LandingPage() {
   };
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-8 relative">
-      <div className="max-w-2xl w-full space-y-8">
+      {/* <div className="absolute top-4 right-4">
+        <Link href="/login" className="text-white hover:text-white/80 transition-colors">login</Link>
+      </div> */}
+      <div className="max-w-3xl w-full space-y-8">
         {/* Tagline */}
-        <h1 className="text-2xl font-bold text-black text-left">
+        <h1 className="text-2xl font-bold text-black text-left bg-yellow-200 rounded px-2 py-1 inline-block shadow-md">
           i signed up to every {schoolName.toUpperCase()} mailing list so you
           don&apos;t have to
         </h1>
 
         {/* Manifesto Letter */}
-        <div className="space-y-6 text-left">
+        <div className="space-y-2 text-left">
           {/* <p className="text-lg text-black">that&apos;s right - every club, newsletter, calendar etc</p> */}
-          <p className="text-lg text-black">hi i&apos;m chris</p>
-          <p className="text-lg text-black">i have big fomo</p>
-          <p className="text-lg text-black">
-            do you? when was the last time you said: &quot;i wish i&apos;d known
-            about that&quot;
-          </p>
-          <p className="text-lg text-black">
-            never let another opportunity slip past you again
-          </p>
-          <p className="text-lg text-white font-bold">
-            meet amber, your personal opportunity scout
-          </p>
+          <div>
+            <p className="text-lg text-black bg-yellow-50 rounded px-2 py-1 inline-block shadow-md mb-1">hi i&apos;m chris</p>
+          </div>
+          <div>
+            <p className="text-lg text-black bg-yellow-50 rounded px-2 py-1 inline-block shadow-md mb-1">i have big fomo</p>
+          </div>
+          <div>
+            <p className="text-lg text-black bg-yellow-50 rounded px-2 py-1 inline-block shadow-md mb-1">
+              do you? when was the last time you said: &quot;i wish i&apos;d known about that&quot;
+            </p>
+          </div>
+          <div>
+            <p className="text-lg text-black bg-yellow-50 rounded px-2 py-1 inline-block shadow-md mb-1">
+              never let another opportunity slip past you again
+            </p>
+          </div>
+          <div>
+            <p className="text-lg text-white font-bold bg-gradient-to-r from-purple-600 to-red-600 rounded px-2 py-1 inline-block shadow-md">
+              meet amber, your personal opportunity scout
+            </p>
+          </div>
         </div>
 
         {/* Email Signup Form */}
